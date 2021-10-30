@@ -21,10 +21,11 @@
   },
   "type": "module",
   "preview": true,
-  "scripts": {
-    "test": "jest"
+  "dependencies": {
+    "node-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^16.11.6",
     "eslint": "^8.1.0",
     "typescript": "^4.4.4"
   },
@@ -49,9 +50,5 @@
   "keywords": [
     "url-shortener",
     "fasmga"
-  ],
-  "dependencies": {
-    "dotenv": "^10.0.0",
-    "node-fetch": "^3.0.0"
-  }
+  ]
 }
