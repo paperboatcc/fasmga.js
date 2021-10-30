@@ -1,0 +1,13 @@
+# Typescript build directory
+dist/
+dist/**/**
+
+# Logs directory
+logs/
+reports/
+
+# Not script file
+*.json
+*.md
+
+node_modules/
