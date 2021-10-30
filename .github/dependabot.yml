@@ -6,7 +6,7 @@ updates:
     directory: /
     schedule:
       interval: daily
-      time: '13:00'
+      time: '12:30'
       timezone: Europe/Rome
     assignees:
       - Fleny113
