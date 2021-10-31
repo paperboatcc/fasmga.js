@@ -1,0 +1,6 @@
+{
+	"type": "module",
+	"dependencies": {
+		"fasmga.js": "file:../"
+	}
+}

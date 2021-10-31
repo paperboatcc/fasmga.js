@@ -31,6 +31,8 @@ export class Client {
 	 * @param {string} token Your fasmga api token
 	 */
 	constructor(token) {
+		if (!token) throw new Error("You can't create a fasmga.js client without token!");
+
 		this.token = token;
 		this.headers = { "Authorization": this.token };
 	}
@@ -67,7 +69,7 @@ export class Client {
 		else if (response.status !== 200) {
 			if (process.env.fasmgajs_test === "true") console.table(json);
 
-			return { response: undefined, error: new Error("Uknown error") };
+			return { response: undefined, error: new Error("Unknown error") };
 		}
 
 		return { response: json, error: undefined };
@@ -87,7 +89,7 @@ export class Client {
 	}
 
 	/**
-	 * @description Return data about token releated user
+	 * @description Return data about token related user
 	 * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (Error | undefined) }>} Response is null when there are an error, else error is null and response is the user data object
 	 */
 	async getUser() {
@@ -100,7 +102,7 @@ export class Client {
 	}
 
 	/**
-	 * @description Return all your url craeted with token used to create client
+	 * @description Return all your url created with token used to create client
 	 * @returns {Promise<{ response: ( [{ ID: string, redirect_url: string, owner: string, nsfw: boolean, clicks: number, captcha: boolean, deletedate: number, editinfo: object, unembedify: boolean, securitytype: ("none" | "password"), creationdate: number }] | undefined ), error: (Error | undefined) }>} List of url
 	 */
 	async getUrls() {
@@ -122,7 +124,7 @@ export class Client {
 	 * @param {string} [options.password] password for the url
 	 * @param {boolean} [options.captcha] captcha
 	 * @param {boolean} [options.unembedify] don't show the embed?
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Rensponse is the id of url you are created
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is the id of url you are created
 	 */
 	async short(options) {
 		const testConn = await this.testConnection();
@@ -131,7 +133,7 @@ export class Client {
 
 		if (!options) return { response: undefined, error: new Error("You must provide options to create the url") };
 		if (!options.url) return { response: undefined, error: new Error("You must provide an url to short that") };
-		if (!options.nsfw) return { response: undefined, error: new Error("You must insert nsfw value") };
+		if (!options.nsfw && options.nsfw !== false) return { response: undefined, error: new Error("You must insert nsfw value") };
 		if (!options.idtype && !options.id) return { response: undefined, error: new Error("You must provide an idtype or an id to generate the url") };
 		if (!options.url) return { response: undefined, error: new Error("You must provide an url to short that") };
 
@@ -142,7 +144,7 @@ export class Client {
 	/**
 	 * @description Delete an url
 	 * @param {string} id id of the id you want to delete
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Rensponse is the id of url you are created
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is the id of url you are created
 	 */
 	async delete(id) {
 		const testConn = await this.testConnection();
@@ -163,7 +165,7 @@ export class Client {
 	 * @param {string} [options.password] new password of the url, use #remove# to remove password
 	 * @param {boolean} [options.captcha] captcha
 	 * @param {boolean} [options.unembedify] don't show the embed?
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is if edit has ben compleated
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is if edit has ben completed
 	 */
 	async edit(id, options) {
 		const testConn = await this.testConnection();
