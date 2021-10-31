@@ -20,7 +20,6 @@
     "import": "./sources/main.js"
   },
   "type": "module",
-  "preview": true,
   "dependencies": {
     "node-fetch": "^3.0.0"
   },
