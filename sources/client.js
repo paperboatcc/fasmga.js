@@ -5,8 +5,7 @@
 
 // eslint-disable-next-line no-unused-vars
 import fetch, { Response } from "node-fetch";
-
-//TODO: Replace all error with fasmga.js error (WIP)
+import { FasmgaError } from "./error.js";
 
 export class Client {
 
@@ -31,7 +30,7 @@ export class Client {
 	 * @param {string} token Your fasmga api token
 	 */
 	constructor(token) {
-		if (!token) throw new Error("You can't create a fasmga.js client without token!");
+		if (!token) throw new FasmgaError("You can't create a fasmga.js client without token!");
 
 		this.token = token;
 		this.headers = { "Authorization": this.token };
@@ -40,16 +39,16 @@ export class Client {
 	/**
 	 * @private
 	 * @package This should be used only py package, you can use getRatelimit()
-	 * @returns {Promise<(void | Error)>} Promise don't have a constant response, normally is a json with data
+	 * @returns {Promise<(void | FasmgaError)>} Promise don't have a constant response, normally is a json with data
 	 */
 	async testConnection() {
 		const response = await fetch(`${this.apiUrl}/ratelimit`, { method: "GET", headers: this.headers });
 		const json = await response.json();
 
-		if (typeof json !== "object" || json === null) return new Error("Error parse server response");
+		if (typeof json !== "object" || json === null) return new FasmgaError("FasmgaError parse server response");
 
 		// @ts-ignore
-		if (json.remain === 0) return new Error("429 status code");
+		if (json.remain === 0) return new FasmgaError("429 status code");
 
 		return undefined;
 	}
@@ -57,19 +56,19 @@ export class Client {
 	/**
 	 * @private
 	 * @param {Response} response pass to this function the server response
-	 * @returns {Promise<{ response: (object | undefined), error: (Error | undefined) }>} This should return an object
+	 * @returns {Promise<{ response: (object | undefined), error: (FasmgaError | undefined) }>} This should return an object
 	 */
 	async checkResponse(response) {
 		const json = await response.json();
 
-		if (typeof json !== "object" || json === null) return { response: undefined, error: new Error("Error parse server response") };
+		if (typeof json !== "object" || json === null) return { response: undefined, error: new FasmgaError("FasmgaError parse server response") };
 
-		if (response.status === 400) return { response: undefined, error: new Error(`400 status code - ${JSON.stringify(json)}`) };
-		else if (response.status === 500) return { response: undefined, error: new Error("500 status code, server error") };
+		if (response.status === 400) return { response: undefined, error: new FasmgaError(`400 status code - ${JSON.stringify(json)}`) };
+		else if (response.status === 500) return { response: undefined, error: new FasmgaError("500 status code, server FasmgaError") };
 		else if (response.status !== 200) {
 			if (process.env.fasmgajs_test === "true") console.table(json);
 
-			return { response: undefined, error: new Error("Unknown error") };
+			return { response: undefined, error: new FasmgaError("Unknown FasmgaError") };
 		}
 
 		return { response: json, error: undefined };
@@ -77,7 +76,7 @@ export class Client {
 
 	/**
 	 * @description Return data about your ratelimit status
-	 * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (Error | undefined) }>} Response is null when there are an error, else error is null and response is you data about ratelimit
+	 * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is you data about ratelimit
 	 */
 	async getRatelimit() {
 		const testConn = await this.testConnection();
@@ -90,7 +89,7 @@ export class Client {
 
 	/**
 	 * @description Return data about token related user
-	 * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (Error | undefined) }>} Response is null when there are an error, else error is null and response is the user data object
+	 * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is the user data object
 	 */
 	async getUser() {
 		const testConn = await this.testConnection();
@@ -103,7 +102,7 @@ export class Client {
 
 	/**
 	 * @description Return all your url created with token used to create client
-	 * @returns {Promise<{ response: ( [{ ID: string, redirect_url: string, owner: string, nsfw: boolean, clicks: number, captcha: boolean, deletedate: number, editinfo: object, unembedify: boolean, securitytype: ("none" | "password"), creationdate: number }] | undefined ), error: (Error | undefined) }>} List of url
+	 * @returns {Promise<{ response: ( [{ ID: string, redirect_url: string, owner: string, nsfw: boolean, clicks: number, captcha: boolean, deletedate: number, editinfo: object, unembedify: boolean, securitytype: ("none" | "password"), creationdate: number }] | undefined ), error: (FasmgaError | undefined) }>} List of url
 	 */
 	async getUrls() {
 		const testConn = await this.testConnection();
@@ -124,18 +123,18 @@ export class Client {
 	 * @param {string} [options.password] password for the url
 	 * @param {boolean} [options.captcha] captcha
 	 * @param {boolean} [options.unembedify] don't show the embed?
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is the id of url you are created
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is the id of url you are created
 	 */
 	async short(options) {
 		const testConn = await this.testConnection();
 
 		if (testConn) return { error: testConn, response: undefined };
 
-		if (!options) return { response: undefined, error: new Error("You must provide options to create the url") };
-		if (!options.url) return { response: undefined, error: new Error("You must provide an url to short that") };
-		if (!options.nsfw && options.nsfw !== false) return { response: undefined, error: new Error("You must insert nsfw value") };
-		if (!options.idtype && !options.id) return { response: undefined, error: new Error("You must provide an idtype or an id to generate the url") };
-		if (!options.url) return { response: undefined, error: new Error("You must provide an url to short that") };
+		if (!options) return { response: undefined, error: new FasmgaError("You must provide options to create the url") };
+		if (!options.url) return { response: undefined, error: new FasmgaError("You must provide an url to short that") };
+		if (!options.nsfw && options.nsfw !== false) return { response: undefined, error: new FasmgaError("You must insert nsfw value") };
+		if (!options.idtype && !options.id) return { response: undefined, error: new FasmgaError("You must provide an idtype or an id to generate the url") };
+		if (!options.url) return { response: undefined, error: new FasmgaError("You must provide an url to short that") };
 
 		// @ts-ignore
 		return await this.checkResponse(await fetch(`${this.apiUrl}/testing/create`, { method: "POST", body: JSON.stringify(options), headers: this.headers }));
@@ -144,14 +143,14 @@ export class Client {
 	/**
 	 * @description Delete an url
 	 * @param {string} id id of the id you want to delete
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is the id of url you are created
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is the id of url you are created
 	 */
 	async delete(id) {
 		const testConn = await this.testConnection();
 
 		if (testConn) return { error: testConn, response: undefined };
 
-		if (!id) return { response: undefined, error: new Error("You must provide id of the url to delete") };
+		if (!id) return { response: undefined, error: new FasmgaError("You must provide id of the url to delete") };
 
 		// @ts-ignore
 		return await this.checkResponse(await fetch(`${this.apiUrl}/testing/delete?id=${id}`, { method: "DELETE", headers: this.headers }));
@@ -165,15 +164,15 @@ export class Client {
 	 * @param {string} [options.password] new password of the url, use #remove# to remove password
 	 * @param {boolean} [options.captcha] captcha
 	 * @param {boolean} [options.unembedify] don't show the embed?
-	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is if edit has ben completed
+	 * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is if edit has ben completed
 	 */
 	async edit(id, options) {
 		const testConn = await this.testConnection();
 
 		if (testConn) return { error: testConn, response: undefined };
 
-		if (!options) return { response: undefined, error: new Error("You must provide options to create the url") };
-		if (!options.password && options.nsfw && options.captcha && options.unembedify) return { response: undefined, error: new Error("You must provide at a least one of \"password\", \"nsfw\", \"captcha\", \"unembedify\"") };
+		if (!options) return { response: undefined, error: new FasmgaError("You must provide options to create the url") };
+		if (!options.password && options.nsfw && options.captcha && options.unembedify) return { response: undefined, error: new FasmgaError("You must provide at a least one of \"password\", \"nsfw\", \"captcha\", \"unembedify\"") };
 
 		// @ts-ignore
 		return await this.checkResponse(await fetch(`${this.apiUrl}/testing/edit?id=${id}`, { method: "PATCH", body: JSON.stringify(options), headers: this.headers }));

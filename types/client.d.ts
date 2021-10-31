@@ -20,29 +20,29 @@ export class Client {
     /**
      * @private
      * @package This should be used only py package, you can use getRatelimit()
-     * @returns {Promise<(void | Error)>} Promise don't have a constant response, normally is a json with data
+     * @returns {Promise<(void | FasmgaError)>} Promise don't have a constant response, normally is a json with data
      */
     private testConnection;
     /**
      * @private
      * @param {Response} response pass to this function the server response
-     * @returns {Promise<{ response: (object | undefined), error: (Error | undefined) }>} This should return an object
+     * @returns {Promise<{ response: (object | undefined), error: (FasmgaError | undefined) }>} This should return an object
      */
     private checkResponse;
     /**
      * @description Return data about your ratelimit status
-     * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (Error | undefined) }>} Response is null when there are an error, else error is null and response is you data about ratelimit
+     * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is you data about ratelimit
      */
     getRatelimit(): Promise<{
         response: ({
             remain: number;
             message: string;
         } | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
     /**
-     * @description Return data about token releated user
-     * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (Error | undefined) }>} Response is null when there are an error, else error is null and response is the user data object
+     * @description Return data about token related user
+     * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is the user data object
      */
     getUser(): Promise<{
         response: ({
@@ -52,11 +52,11 @@ export class Client {
             creation_date: number;
             is_premium: boolean;
         } | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
     /**
-     * @description Return all your url craeted with token used to create client
-     * @returns {Promise<{ response: ( [{ ID: string, redirect_url: string, owner: string, nsfw: boolean, clicks: number, captcha: boolean, deletedate: number, editinfo: object, unembedify: boolean, securitytype: ("none" | "password"), creationdate: number }] | undefined ), error: (Error | undefined) }>} List of url
+     * @description Return all your url created with token used to create client
+     * @returns {Promise<{ response: ( [{ ID: string, redirect_url: string, owner: string, nsfw: boolean, clicks: number, captcha: boolean, deletedate: number, editinfo: object, unembedify: boolean, securitytype: ("none" | "password"), creationdate: number }] | undefined ), error: (FasmgaError | undefined) }>} List of url
      */
     getUrls(): Promise<{
         response: ([{
@@ -72,7 +72,7 @@ export class Client {
             securitytype: ("none" | "password");
             creationdate: number;
         }] | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
     /**
      * @description Short an url
@@ -84,7 +84,7 @@ export class Client {
      * @param {string} [options.password] password for the url
      * @param {boolean} [options.captcha] captcha
      * @param {boolean} [options.unembedify] don't show the embed?
-     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Rensponse is the id of url you are created
+     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is the id of url you are created
      */
     short(options: {
         url: string;
@@ -98,18 +98,18 @@ export class Client {
         response: ({
             success: string;
         } | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
     /**
      * @description Delete an url
      * @param {string} id id of the id you want to delete
-     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Rensponse is the id of url you are created
+     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is the id of url you are created
      */
     delete(id: string): Promise<{
         response: ({
             success: string;
         } | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
     /**
      * @description Edit an url
@@ -119,7 +119,7 @@ export class Client {
      * @param {string} [options.password] new password of the url, use #remove# to remove password
      * @param {boolean} [options.captcha] captcha
      * @param {boolean} [options.unembedify] don't show the embed?
-     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( Error | undefined ) }>} Response is if edit has ben compleated
+     * @returns {Promise<{ response: ( { success: string } | undefined ), error: ( FasmgaError | undefined ) }>} Response is if edit has ben completed
      */
     edit(id: string, options: {
         nsfw?: boolean | undefined;
@@ -130,6 +130,7 @@ export class Client {
         response: ({
             success: string;
         } | undefined);
-        error: (Error | undefined);
+        error: (FasmgaError | undefined);
     }>;
 }
+import { FasmgaError } from "./error.js";
