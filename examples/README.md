@@ -31,7 +31,7 @@ This mean the id you provide to delete or edit an url is invalid, use example `g
 
 Please note fasmga.js is a es-module, so use export/import to export and import package/files, so if you use exports/require you must use import() to use the package, like here:
 ```js
-const fasmga = import("fasmga.js");
+const fasmga = await import("fasmga.js");
 ```
 If you want some example with commonjs see `commonjs` folder
 
