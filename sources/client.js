@@ -45,7 +45,7 @@ export class Client {
 		const response = await fetch(`${this.apiUrl}/ratelimit`, { method: "GET", headers: this.headers });
 		const json = await response.json();
 
-		if (typeof json !== "object" || json === null) return new FasmgaError("FasmgaError parse server response");
+		if (typeof json !== "object" || json === null) return new FasmgaError("Cannot parse server response");
 
 		// @ts-ignore
 		if (json.remain === 0) return new FasmgaError("429 status code");
@@ -61,14 +61,14 @@ export class Client {
 	async checkResponse(response) {
 		const json = await response.json();
 
-		if (typeof json !== "object" || json === null) return { response: undefined, error: new FasmgaError("FasmgaError parse server response") };
+		if (typeof json !== "object" || json === null) return { response: undefined, error: new FasmgaError("Cannot parse server response") };
 
 		if (response.status === 400) return { response: undefined, error: new FasmgaError(`400 status code - ${JSON.stringify(json)}`) };
-		else if (response.status === 500) return { response: undefined, error: new FasmgaError("500 status code, server FasmgaError") };
+		else if (response.status === 500) return { response: undefined, error: new FasmgaError("500 status code, internal server error") };
 		else if (response.status !== 200) {
 			if (process.env.fasmgajs_test === "true") console.table(json);
 
-			return { response: undefined, error: new FasmgaError("Unknown FasmgaError") };
+			return { response: undefined, error: new FasmgaError("Unknown error") };
 		}
 
 		return { response: json, error: undefined };
@@ -76,7 +76,7 @@ export class Client {
 
 	/**
 	 * @description Return data about your ratelimit status
-	 * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is you data about ratelimit
+	 * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an error, else error is null and response is you data about ratelimit
 	 */
 	async getRatelimit() {
 		const testConn = await this.testConnection();
@@ -89,7 +89,7 @@ export class Client {
 
 	/**
 	 * @description Return data about token related user
-	 * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is the user data object
+	 * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an error, else error is null and response is the user data object
 	 */
 	async getUser() {
 		const testConn = await this.testConnection();
