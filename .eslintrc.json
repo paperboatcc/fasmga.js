@@ -26,7 +26,7 @@
         "brace-style": "error",
         "callback-return": "off",
         "camelcase": "error",
-        "capitalized-comments": "warn",
+        "capitalized-comments": "off",
         "class-methods-use-this": "off",
         "comma-dangle": "off",
         "comma-spacing": "error",
@@ -269,7 +269,14 @@
         "prefer-spread": "error",
         "prefer-template": "error",
         "quote-props": "off",
-        "quotes": "error",
+        "quotes": [
+            "error",
+            "double",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
         "radix": "error",
         "require-atomic-updates": "error",
         "require-await": "error",

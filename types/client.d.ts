@@ -31,7 +31,7 @@ export class Client {
     private checkResponse;
     /**
      * @description Return data about your ratelimit status
-     * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is you data about ratelimit
+     * @returns {Promise<{ response: ({ remain: number, message: string } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an error, else error is null and response is you data about ratelimit
      */
     getRatelimit(): Promise<{
         response: ({
@@ -42,7 +42,7 @@ export class Client {
     }>;
     /**
      * @description Return data about token related user
-     * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an FasmgaError, else FasmgaError is null and response is the user data object
+     * @returns {Promise<{ response: ({ username: string, is_banned: boolean, "2fa_enabled": boolean, creation_date: number, is_premium: boolean } | undefined), error: (FasmgaError | undefined) }>} Response is null when there are an error, else error is null and response is the user data object
      */
     getUser(): Promise<{
         response: ({
