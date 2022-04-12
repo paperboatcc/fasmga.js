@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "allowJs": true,
     "checkJs": true,
@@ -17,5 +17,7 @@
     "alwaysStrict": true,
     "skipLibCheck": true
   },
-  "include": ["sources/**/**/*"],
+  "include": [
+    "sources/**/**/*"
+  ],
 }

@@ -4,7 +4,7 @@ const main = async () => {
 	const fasmClient = new fasmga.Client("YOUR API TOKEN!");
 
 	const { response, error } = await fasmClient.short({
-	// You can put any url here
+		// You can put any url here
 		url: "https://example.com",
 		// If url is nsfw please use true instead of false
 		nsfw: false,

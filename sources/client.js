@@ -3,9 +3,18 @@
  * @license MIT
  */
 
+/**
+ * @type {unknown}
+ */
 // eslint-disable-next-line no-unused-vars
-import fetch, { Response } from "node-fetch";
+let fetch, Response;
 import { FasmgaError } from "./error.js";
+
+if (process) {
+	const node_fetch = await import("node-fetch");
+	fetch = node_fetch.default;
+	Response = node_fetch.Response;
+}
 
 export class Client {
 
@@ -42,6 +51,7 @@ export class Client {
 	 * @returns {Promise<(void | FasmgaError)>} Promise don't have a constant response, normally is a json with data
 	 */
 	async testConnection() {
+		// @ts-expect-error fetch is from browser when used in browsers
 		const response = await fetch(`${this.apiUrl}/ratelimit`, { method: "GET", headers: this.headers });
 		const json = await response.json();
 
