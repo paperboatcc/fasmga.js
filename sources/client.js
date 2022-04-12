@@ -6,8 +6,9 @@
 /**
  * @type {unknown}
  */
+// fetch will have a value if in browser
 // eslint-disable-next-line no-unused-vars
-let fetch, Response;
+let fetch, Response = fetch;
 import { FasmgaError } from "./error.js";
 
 if (process) {
